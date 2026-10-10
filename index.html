@@ -52,6 +52,7 @@
     .leaflet-popup-content-wrapper { border-radius: 12px; padding: 4px; font-family: 'Plus Jakarta Sans', sans-serif; }
     .glass-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(12px); border: 1px solid rgba(226, 232, 240, 0.8); }
     
+    /* Auto-suggest dropdown styling */
     .search-dropdown {
       max-height: 280px;
       overflow-y: auto;
@@ -80,7 +81,7 @@
           </div>
         </div>
 
-        <!-- Global Search Bar with Live Autocomplete -->
+        <!-- Global Search Bar with Live AICTE API Autocomplete -->
         <div class="relative flex-1 max-w-xl mx-4 hidden md:block">
           <div class="relative">
             <i data-lucide="search" class="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i>
@@ -89,6 +90,7 @@
               <i data-lucide="locate-fixed" class="w-3.5 h-3.5"></i> Nearby
             </button>
           </div>
+          <!-- Live Auto-suggest Dropdown -->
           <div id="headerResults" class="hidden absolute left-0 right-0 top-12 bg-white border border-slate-200 rounded-2xl search-dropdown z-50 divide-y divide-slate-100"></div>
         </div>
 
@@ -112,7 +114,7 @@
   <!-- MAIN APP WORKFLOW INTERFACE -->
   <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
 
-    <!-- HERO & WELCOME BANNER -->
+    <!-- PAGE 01 HERO & WELCOME BANNER (HANDWRITTEN PAGE 01) -->
     <section class="mb-6 bg-gradient-to-r from-brand-900 via-brand-700 to-indigo-900 rounded-3xl p-6 sm:p-8 text-white relative overflow-hidden shadow-xl">
       <div class="absolute -right-10 -bottom-10 w-64 h-64 bg-saffron-500/20 rounded-full blur-3xl pointer-events-none"></div>
       <div class="relative z-10 max-w-3xl">
@@ -126,7 +128,7 @@
           Select your college or Tier-3 city below to discover verified hostels with real-time room availability, food mess menus, distance radii, and zero brokerage fees.
         </p>
 
-        <!-- College Search Input -->
+        <!-- College Search Input (Mobile + Hero Focused) -->
         <div class="relative bg-white p-2 rounded-2xl shadow-lg flex flex-col sm:flex-row gap-2">
           <div class="relative flex-1">
             <i data-lucide="map-pin" class="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-saffron-500"></i>
@@ -138,7 +140,7 @@
           </button>
         </div>
 
-        <!-- Quick College Chips -->
+        <!-- Quick College Chips (Tier 1, 2 & Tier 3 Hubs) -->
         <div class="mt-4 flex flex-wrap items-center gap-2 text-xs text-slate-300">
           <span class="font-semibold text-slate-400">Popular Hubs:</span>
           <button onclick="selectPresetCollege('DU North Campus, Delhi')" class="bg-white/10 hover:bg-white/20 px-2.5 py-1 rounded-md transition text-white">DU North Campus</button>
@@ -152,9 +154,1008 @@
       </div>
     </section>
 
-    <!-- NAVIGATION TABS -->
+    <!-- NAVIGATION TABS BASED ON WIREFRAME PAGES -->
     <div class="flex items-center gap-2 border-b border-slate-200 mb-6 overflow-x-auto pb-1 custom-scrollbar text-xs sm:text-sm font-semibold">
       <button id="tabBtn-explore" onclick="switchTab('explore')" class="tab-btn px-4 py-2.5 border-b-2 border-brand-600 text-brand-600 flex items-center gap-2 whitespace-nowrap">
-        <i data-lucide="map" class="w-4 h-4"></i> Interactive Map & Hostels
+        <i data-lucide="map" class="w-4 h-4"></i> Page 02 & 03: Map & Area Hostels
       </button>
-      <button id="tabBtn-rooms" onclick="switchTab('rooms')" class="tab
+      <button id="tabBtn-rooms" onclick="switchTab('rooms')" class="tab-btn px-4 py-2.5 border-b-2 border-transparent text-slate-500 hover:text-slate-800 flex items-center gap-2 whitespace-nowrap">
+        <i data-lucide="bed-double" class="w-4 h-4"></i> Page 04: Room Pricing
+      </button>
+      <button id="tabBtn-mess" onclick="switchTab('mess')" class="tab-btn px-4 py-2.5 border-b-2 border-transparent text-slate-500 hover:text-slate-800 flex items-center gap-2 whitespace-nowrap">
+        <i data-lucide="utensils" class="w-4 h-4"></i> Page 05: 3-Meal Mess Menu
+      </button>
+      <button id="tabBtn-reviews" onclick="switchTab('reviews')" class="tab-btn px-4 py-2.5 border-b-2 border-transparent text-slate-500 hover:text-slate-800 flex items-center gap-2 whitespace-nowrap">
+        <i data-lucide="star" class="w-4 h-4"></i> Page 06: Reviews & AI Matcher
+      </button>
+    </div>
+
+    <!-- TAB 1: PAGES 02 & 03 - MAP BOUNDARY RADIUS & HOSTEL LISTINGS -->
+    <div id="tab-explore" class="tab-content block">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        <!-- SIDE PANEL / FILTERS (HANDWRITTEN PAGE 02 BOUNDARY & FILTERS) -->
+        <div class="lg:col-span-4 space-y-5">
+          
+          <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+              <h3 class="font-heading font-bold text-slate-900 text-base flex items-center gap-2">
+                <i data-lucide="sliders-horizontal" class="w-4 h-4 text-brand-600"></i> Location & Filters
+              </h3>
+              <span id="activeCollegeLabel" class="text-xs bg-brand-50 text-brand-700 px-2.5 py-1 rounded-full font-bold">DU North Campus</span>
+            </div>
+
+            <!-- Radius Boundary Selector (Handwritten: "Boundary by road / KM radius") -->
+            <div>
+              <div class="flex justify-between items-center text-xs font-semibold text-slate-700 mb-1.5">
+                <span>Radius Boundary from College</span>
+                <span id="radiusVal" class="text-brand-600 font-bold bg-brand-50 px-2 py-0.5 rounded">2.5 KM</span>
+              </div>
+              <input type="range" id="radiusRange" min="0.5" max="10" step="0.5" value="2.5" oninput="updateRadius(this.value)" class="w-full accent-brand-600 cursor-pointer">
+              <div class="flex justify-between text-[10px] text-slate-400 font-medium mt-1">
+                <span>500m (Walking)</span>
+                <span>5 KM (E-Rickshaw)</span>
+                <span>10 KM (Bus/Metro)</span>
+              </div>
+            </div>
+
+            <!-- Sorting Bar -->
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Sort Hostels By</label>
+              <select id="sortBy" onchange="renderHostels()" class="w-full bg-slate-50 border border-slate-200 text-xs font-medium rounded-xl p-2.5 focus:border-brand-500 outline-none">
+                <option value="recommended">Best Recommended First</option>
+                <option value="priceLow">Rent: Low to High (Tier 3 Budget)</option>
+                <option value="distance">Nearest to College Campus</option>
+                <option value="rating">Highest Student Rating</option>
+              </select>
+            </div>
+
+            <!-- Essential Student Amenities -->
+            <div class="space-y-2">
+              <label class="block text-xs font-semibold text-slate-700">Must-Have Amenities</label>
+              <div class="grid grid-cols-2 gap-2 text-xs">
+                <label class="flex items-center gap-2 p-2 rounded-lg bg-slate-50 hover:bg-slate-100 cursor-pointer">
+                  <input type="checkbox" id="filterMess" onchange="renderHostels()" checked class="accent-brand-600 rounded">
+                  <span>3-Meal Mess</span>
+                </label>
+                <label class="flex items-center gap-2 p-2 rounded-lg bg-slate-50 hover:bg-slate-100 cursor-pointer">
+                  <input type="checkbox" id="filterAc" onchange="renderHostels()" class="accent-brand-600 rounded">
+                  <span>AC / Air Cooler</span>
+                </label>
+                <label class="flex items-center gap-2 p-2 rounded-lg bg-slate-50 hover:bg-slate-100 cursor-pointer">
+                  <input type="checkbox" id="filterPower" onchange="renderHostels()" checked class="accent-brand-600 rounded">
+                  <span>24x7 Power Backup</span>
+                </label>
+                <label class="flex items-center gap-2 p-2 rounded-lg bg-slate-50 hover:bg-slate-100 cursor-pointer">
+                  <input type="checkbox" id="filterBiometric" onchange="renderHostels()" class="accent-brand-600 rounded">
+                  <span>Biometric Entry</span>
+                </label>
+              </div>
+            </div>
+
+            <div class="pt-2">
+              <button onclick="resetFilters()" class="w-full py-2 text-xs font-semibold text-slate-500 hover:text-slate-800 bg-slate-100 rounded-xl transition">
+                Reset All Filters
+              </button>
+            </div>
+
+          </div>
+
+          <!-- Quick Google Maps Action Card -->
+          <div class="bg-gradient-to-br from-slate-900 to-slate-800 text-white p-4 rounded-2xl shadow-sm text-xs flex items-center justify-between">
+            <div class="space-y-1">
+              <p class="font-bold flex items-center gap-1 text-slate-100">
+                <i data-lucide="map-pin" class="w-4 h-4 text-saffron-500"></i> Google Maps Navigation
+              </p>
+              <p class="text-slate-400 text-[11px]">Get turn-by-turn walking or auto routes directly to campus.</p>
+            </div>
+            <a id="gmapsExternalLink" href="https://maps.google.com" target="_blank" class="bg-saffron-500 hover:bg-saffron-600 px-3 py-2 rounded-xl text-white font-bold transition flex items-center gap-1 text-[11px] whitespace-nowrap">
+              Open Maps <i data-lucide="external-link" class="w-3 h-3"></i>
+            </a>
+          </div>
+
+        </div>
+
+        <!-- HOSTEL CARDS LISTINGS & INTERACTIVE GOOGLE MAP (HANDWRITTEN PAGE 03) -->
+        <div class="lg:col-span-8 space-y-6">
+          
+          <!-- Interactive OpenStreetMap / Google Maps View -->
+          <div class="bg-white p-3 rounded-2xl border border-slate-200 shadow-sm">
+            <div class="flex items-center justify-between mb-2 px-2">
+              <span class="text-xs font-bold text-slate-700 flex items-center gap-1.5">
+                <i data-lucide="navigation" class="w-4 h-4 text-brand-600"></i> Live Radius Boundary Map
+              </span>
+              <span class="text-[11px] text-slate-500" id="mapStatusText">Showing hostels near selected campus</span>
+            </div>
+            <div class="h-64 sm:h-80 rounded-xl overflow-hidden border border-slate-200 relative">
+              <div id="map"></div>
+            </div>
+          </div>
+
+          <!-- Section Header for Page 03 -->
+          <div class="flex items-center justify-between">
+            <div>
+              <h2 class="font-heading font-extrabold text-slate-900 text-lg sm:text-xl">
+                Hostels & PGs in Selected Area
+              </h2>
+              <p class="text-xs text-slate-500" id="hostelCountLabel">Showing verified properties</p>
+            </div>
+            <div class="flex items-center gap-1 text-xs text-saffron-600 font-bold bg-saffron-50 px-3 py-1.5 rounded-full">
+              <i data-lucide="award" class="w-4 h-4"></i> Best Recommendations First
+            </div>
+          </div>
+
+          <!-- Dynamic Hostel Grid Container -->
+          <div id="hostelsContainer" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <!-- Dynamically populated via JS -->
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+
+    <!-- TAB 2: PAGE 04 - ROOM TYPES & PRICES -->
+    <div id="tab-rooms" class="tab-content hidden space-y-6">
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-100">
+          <div>
+            <span class="text-xs font-bold text-saffron-600 uppercase tracking-wider">Page 04 Wireframe</span>
+            <h2 class="font-heading font-extrabold text-2xl text-slate-900" id="selectedHostelNameRooms">
+              Shree Ram Student PG & Hostel
+            </h2>
+            <p class="text-xs text-slate-500 flex items-center gap-1 mt-0.5">
+              <i data-lucide="map-pin" class="w-3.5 h-3.5 text-slate-400"></i> Near College Gate 2 (600 meters)
+            </p>
+          </div>
+          <button onclick="openBookingModal()" class="bg-saffron-500 hover:bg-saffron-600 text-white font-bold text-xs sm:text-sm px-5 py-2.5 rounded-xl transition shadow-md flex items-center gap-1.5">
+            <i data-lucide="zap" class="w-4 h-4"></i> Pre-Book Slot (₹499 Token)
+          </button>
+        </div>
+
+        <!-- Room Types Grid (Single, Double, Triple) -->
+        <div class="mt-6 grid grid-cols-1 md:grid-cols-3 gap-6" id="roomsContainer">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3: PAGE 05 - FOOD & MESS MENU -->
+    <div id="tab-mess" class="tab-content hidden space-y-6">
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-100">
+          <div>
+            <span class="text-xs font-bold text-emerald-600 uppercase tracking-wider">Page 05 Wireframe</span>
+            <h2 class="font-heading font-extrabold text-2xl text-slate-900">
+              Everyday 3-Meal Mess Schedule
+            </h2>
+            <p class="text-xs text-slate-500">Hygienic Indian student mess menu (Included in monthly rent)</p>
+          </div>
+          <div class="flex items-center gap-2 text-xs font-semibold bg-emerald-50 text-emerald-700 px-3 py-1.5 rounded-xl">
+            <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-600"></i> FSSAI Certified Mess Kitchen
+          </div>
+        </div>
+
+        <!-- Day Selector Tabs -->
+        <div class="mt-6 flex gap-2 overflow-x-auto pb-2 custom-scrollbar" id="messDayTabs">
+          <!-- Populated via JS -->
+        </div>
+
+        <!-- Selected Day 3 Meals Breakdown -->
+        <div class="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4" id="messMealsContainer">
+          <!-- Populated via JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 4: PAGE 06 - REVIEWS & AI BUDGET RECOMMENDATIONS -->
+    <div id="tab-reviews" class="tab-content hidden space-y-6">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        <!-- AI Budget Matcher Widget -->
+        <div class="lg:col-span-5 bg-gradient-to-br from-brand-900 to-indigo-900 text-white p-6 rounded-2xl shadow-md space-y-4">
+          <div class="flex items-center gap-2">
+            <div class="w-8 h-8 rounded-lg bg-saffron-500/20 flex items-center justify-center text-saffron-400">
+              <i data-lucide="sparkles" class="w-5 h-5"></i>
+            </div>
+            <h3 class="font-heading font-bold text-lg text-white">AI Student Recommendation</h3>
+          </div>
+          <p class="text-xs text-slate-300">
+            Tell us your monthly budget and preferences, and our algorithm will pick the ideal PG/Hostel near your college.
+          </p>
+
+          <div class="space-y-3 pt-2 text-xs">
+            <div>
+              <label class="block text-slate-300 font-semibold mb-1">Max Monthly Budget (₹)</label>
+              <input type="number" id="aiBudgetInput" value="6500" placeholder="e.g. 5000" class="w-full bg-white/10 border border-white/20 rounded-xl px-3 py-2 text-white outline-none focus:border-saffron-500">
+            </div>
+            <div>
+              <label class="block text-slate-300 font-semibold mb-1">Preferred Room Type</label>
+              <select id="aiRoomPref" class="w-full bg-slate-800 text-white border border-white/20 rounded-xl px-3 py-2 outline-none">
+                <option value="any">Any Sharing (Best Value)</option>
+                <option value="single">Single Private Room</option>
+                <option value="double">2 Sharing</option>
+                <option value="triple">3 Sharing (Budget Friendly)</option>
+              </select>
+            </div>
+            <button onclick="runAiRecommendation()" class="w-full bg-saffron-500 hover:bg-saffron-600 text-white font-bold py-2.5 rounded-xl transition shadow-md flex items-center justify-center gap-2">
+              <i data-lucide="wand-2" class="w-4 h-4"></i> Get Best Match
+            </button>
+          </div>
+
+          <div id="aiRecommendationResult" class="hidden p-4 rounded-xl bg-white/10 border border-white/20 text-xs space-y-2">
+            <!-- Populated via JS -->
+          </div>
+        </div>
+
+        <!-- Student Reviews List -->
+        <div class="lg:col-span-7 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+          <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+            <h3 class="font-heading font-bold text-slate-900 text-lg">Verified Student Reviews</h3>
+            <span class="text-xs bg-slate-100 text-slate-600 px-2.5 py-1 rounded-full font-bold">4.8 / 5.0 Average Rating</span>
+          </div>
+
+          <div class="space-y-4" id="reviewsListContainer">
+            <!-- Populated via JS -->
+          </div>
+
+          <!-- Add Review Form -->
+          <div class="pt-4 border-t border-slate-100 space-y-3">
+            <h4 class="text-xs font-bold text-slate-800">Leave a Review</h4>
+            <div class="grid grid-cols-2 gap-2 text-xs">
+              <input type="text" id="reviewerName" placeholder="Your Name & College" class="p-2 border border-slate-200 rounded-xl outline-none focus:border-brand-500">
+              <select id="reviewerRating" class="p-2 border border-slate-200 rounded-xl outline-none focus:border-brand-500">
+                <option value="5">⭐⭐⭐⭐⭐ 5 Stars</option>
+                <option value="4">⭐⭐⭐⭐ 4 Stars</option>
+                <option value="3">⭐⭐⭐ 3 Stars</option>
+              </select>
+            </div>
+            <textarea id="reviewerComment" rows="2" placeholder="Share your experience regarding mess food, warden, safety, Wi-Fi speed..." class="w-full p-2 border border-slate-200 rounded-xl text-xs outline-none focus:border-brand-500"></textarea>
+            <button onclick="submitReview()" class="bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs px-4 py-2 rounded-xl transition">
+              Submit Review
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+
+  <!-- TOKEN PRE-BOOKING & PAYMENTS MODAL -->
+  <div id="bookingModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white max-w-md w-full rounded-3xl shadow-2xl overflow-hidden border border-slate-100 animate-in fade-in duration-200">
+      
+      <div class="bg-gradient-to-r from-brand-700 to-indigo-800 text-white p-5 flex items-center justify-between">
+        <div>
+          <h3 class="font-heading font-bold text-lg">Token Pre-Booking</h3>
+          <p class="text-xs text-brand-100">Lock your room slot with 100% refundable token fee</p>
+        </div>
+        <button onclick="closeBookingModal()" class="text-white/80 hover:text-white p-1 rounded-full">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div class="p-6 space-y-4 text-xs">
+        
+        <!-- Booking Summary -->
+        <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-200 space-y-2">
+          <div class="flex justify-between font-semibold">
+            <span class="text-slate-600">Selected Hostel:</span>
+            <span class="text-slate-900 font-bold" id="modalHostelName">Shree Ram Student PG</span>
+          </div>
+          <div class="flex justify-between font-semibold">
+            <span class="text-slate-600">Room Sharing:</span>
+            <span class="text-brand-600 font-bold" id="modalRoomType">Double Sharing (AC)</span>
+          </div>
+          <div class="flex justify-between border-t border-slate-200 pt-2 font-bold text-slate-900">
+            <span>Token Booking Fee:</span>
+            <span class="text-saffron-600 text-sm">₹499 <span class="text-[10px] text-slate-400 font-normal">(Adjustable in 1st month rent)</span></span>
+          </div>
+        </div>
+
+        <!-- Subscription / Plan Options -->
+        <div>
+          <label class="block font-bold text-slate-800 mb-1">Choose Subscription Term</label>
+          <div class="grid grid-cols-2 gap-2">
+            <label class="border-2 border-brand-600 bg-brand-50/50 p-2.5 rounded-xl cursor-pointer flex flex-col items-center">
+              <input type="radio" name="subTerm" value="monthly" checked class="accent-brand-600 mb-1">
+              <span class="font-bold text-slate-800">Monthly</span>
+              <span class="text-[10px] text-slate-500">Standard Rent</span>
+            </label>
+            <label class="border-2 border-slate-200 hover:border-brand-500 p-2.5 rounded-xl cursor-pointer flex flex-col items-center">
+              <input type="radio" name="subTerm" value="yearly" class="accent-brand-600 mb-1">
+              <span class="font-bold text-slate-800">Yearly Term</span>
+              <span class="text-[10px] text-emerald-600 font-bold">15% Rent Discount</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Student Phone / WhatsApp Number -->
+        <div>
+          <label class="block font-bold text-slate-800 mb-1">Student Phone Number (for WhatsApp Receipt)</label>
+          <input type="tel" id="bookingPhone" placeholder="+91 98765 43210" class="w-full p-2.5 border border-slate-200 rounded-xl outline-none focus:border-brand-500">
+        </div>
+
+        <!-- Indian UPI Payment Simulator -->
+        <div>
+          <label class="block font-bold text-slate-800 mb-2">Select Payment Method</label>
+          <div class="grid grid-cols-3 gap-2">
+            <button onclick="selectPayment('gpay')" class="p-2 border rounded-xl hover:border-brand-600 font-semibold text-slate-700 text-center flex flex-col items-center gap-1 bg-white">
+              <i data-lucide="qr-code" class="w-4 h-4 text-emerald-600"></i> UPI / GPay
+            </button>
+            <button onclick="selectPayment('phonepe')" class="p-2 border rounded-xl hover:border-brand-600 font-semibold text-slate-700 text-center flex flex-col items-center gap-1 bg-white">
+              <i data-lucide="smartphone" class="w-4 h-4 text-purple-600"></i> PhonePe
+            </button>
+            <button onclick="selectPayment('paytm')" class="p-2 border rounded-xl hover:border-brand-600 font-semibold text-slate-700 text-center flex flex-col items-center gap-1 bg-white">
+              <i data-lucide="wallet" class="w-4 h-4 text-blue-600"></i> Paytm
+            </button>
+          </div>
+        </div>
+
+        <button onclick="confirmBooking()" class="w-full bg-saffron-500 hover:bg-saffron-600 text-white font-bold py-3 rounded-xl transition text-sm shadow-md flex items-center justify-center gap-2">
+          <i data-lucide="check-circle" class="w-4 h-4"></i> Pay ₹499 & Get Warden Contact
+        </button>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- AUTH / LOGIN MODAL -->
+  <div id="loginModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white max-w-sm w-full rounded-3xl shadow-2xl p-6 border border-slate-100 relative">
+      <button onclick="closeLoginModal()" class="absolute right-4 top-4 text-slate-400 hover:text-slate-600">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+
+      <div class="text-center space-y-2 mb-6">
+        <div class="w-12 h-12 bg-brand-50 text-brand-600 rounded-2xl flex items-center justify-center mx-auto font-bold">
+          <i data-lucide="graduation-cap" class="w-6 h-6"></i>
+        </div>
+        <h3 class="font-heading font-extrabold text-xl text-slate-900">Student Sign In</h3>
+        <p class="text-xs text-slate-500">Access exclusive hostel discounts & direct warden chat</p>
+      </div>
+
+      <div class="space-y-4 text-xs">
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">Mobile Number</label>
+          <input type="tel" id="loginMobile" placeholder="+91 98765 43210" class="w-full p-2.5 border border-slate-200 rounded-xl outline-none focus:border-brand-500">
+        </div>
+        <button onclick="sendOtp()" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-bold py-2.5 rounded-xl transition">
+          Send OTP
+        </button>
+        <p class="text-[11px] text-center text-slate-400">Default Test OTP: <span class="font-bold text-slate-600">1234</span></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- JAVASCRIPT APPLICATION CODE -->
+  <script>
+    // --- 1. GLOBAL DATABASE & INITIAL DATA ---
+    const COLLEGES_DB = [
+      { name: "Delhi University (DU North Campus)", city: "Delhi", state: "Delhi", lat: 28.6904, lng: 77.2066 },
+      { name: "Lovely Professional University (LPU)", city: "Phagwara", state: "Punjab", lat: 31.2536, lng: 75.7037 },
+      { name: "Kota Coaching Hub (Allen / Resonance)", city: "Kota", state: "Rajasthan", lat: 25.1337, lng: 75.8453 },
+      { name: "KIIT University", city: "Bhubaneswar", state: "Odisha", lat: 20.3533, lng: 85.8188 },
+      { name: "IIT Bombay", city: "Mumbai", state: "Maharashtra", lat: 19.1334, lng: 72.9133 },
+      { name: "Pune University (SPPU / Kothrud)", city: "Pune", state: "Maharashtra", lat: 18.5529, lng: 73.8248 },
+      { name: "Gachibowli Tech & University Area", city: "Hyderabad", state: "Telangana", lat: 17.4401, lng: 78.3489 },
+      { name: "Anna University / Guindy", city: "Chennai", state: "Tamil Nadu", lat: 13.0102, lng: 80.2354 },
+      { name: "NIT Warangal", city: "Warangal", state: "Telangana", lat: 17.9821, lng: 79.5303 },
+      { name: "Dharmsinh Desai University (DDU)", city: "Nadiad", state: "Gujarat", lat: 22.6903, lng: 72.8634 },
+      { name: "Charusat University", city: "Changa/Anand", state: "Gujarat", lat: 22.5996, lng: 72.8205 },
+      { name: "IIT Roorkee", city: "Roorkee", state: "Uttarakhand", lat: 29.8649, lng: 77.8965 },
+      { name: "BITS Pilani", city: "Pilani", state: "Rajasthan", lat: 28.3639, lng: 75.5870 },
+      { name: "MNNIT Allahabad", city: "Prayagraj", state: "Uttar Pradesh", lat: 25.4920, lng: 81.8639 }
+    ];
+
+    let currentSelectedCollege = COLLEGES_DB[0];
+    let currentRadiusKm = 2.5;
+
+    // Sample Hostels Database
+    let hostelsData = [
+      {
+        id: "h1",
+        name: "Shree Ram Student PG & Hostel",
+        badge: "⭐ Top Recommended for Boys",
+        distKm: 0.6,
+        priceMonthly: 6200,
+        rating: 4.8,
+        reviewsCount: 142,
+        hasMess: true,
+        hasAc: true,
+        hasPower: true,
+        hasBiometric: true,
+        lat: 28.6920,
+        lng: 77.2090,
+        image: "https://images.unsplash.com/photo-1555854877-bab0e564b8d5?auto=format&fit=crop&w=600&q=80",
+        rooms: [
+          { type: "Single Private Room", price: 9500, available: 2, icon: "user" },
+          { type: "2 Sharing (AC + Attached Bath)", price: 7200, available: 4, icon: "users" },
+          { type: "3 Sharing (Budget Non-AC)", price: 5800, available: 6, icon: "users-round" }
+        ]
+      },
+      {
+        id: "h2",
+        name: "Annapurna Girls Luxury PG & Hostel",
+        badge: "🛡️ 24x7 Female Security & Biometric",
+        distKm: 1.1,
+        priceMonthly: 7500,
+        rating: 4.9,
+        reviewsCount: 98,
+        hasMess: true,
+        hasAc: true,
+        hasPower: true,
+        hasBiometric: true,
+        lat: 28.6880,
+        lng: 77.2020,
+        image: "https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?auto=format&fit=crop&w=600&q=80",
+        rooms: [
+          { type: "Single AC Luxury Room", price: 11000, available: 1, icon: "user" },
+          { type: "2 Sharing Premium", price: 8200, available: 3, icon: "users" },
+          { type: "3 Sharing Standard", price: 6500, available: 5, icon: "users-round" }
+        ]
+      },
+      {
+        id: "h3",
+        name: "Saraswati Budget Residency",
+        badge: "💰 Lowest Price Tier-3 Match",
+        distKm: 2.2,
+        priceMonthly: 4200,
+        rating: 4.5,
+        reviewsCount: 64,
+        hasMess: true,
+        hasAc: false,
+        hasPower: true,
+        hasBiometric: false,
+        lat: 28.6960,
+        lng: 77.2150,
+        image: "https://images.unsplash.com/photo-1626297580102-74a01873738f?auto=format&fit=crop&w=600&q=80",
+        rooms: [
+          { type: "2 Sharing Cooler Room", price: 5000, available: 2, icon: "users" },
+          { type: "3 Sharing Standard", price: 4200, available: 8, icon: "users-round" }
+        ]
+      },
+      {
+        id: "h4",
+        name: "Royal Palms Student Suites",
+        badge: "⚡ High-Speed Wi-Fi & Gym",
+        distKm: 1.8,
+        priceMonthly: 8500,
+        rating: 4.7,
+        reviewsCount: 81,
+        hasMess: true,
+        hasAc: true,
+        hasPower: true,
+        hasBiometric: true,
+        lat: 28.6840,
+        lng: 77.2110,
+        image: "https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?auto=format&fit=crop&w=600&q=80",
+        rooms: [
+          { type: "Single Deluxe AC", price: 12500, available: 3, icon: "user" },
+          { type: "2 Sharing AC Suite", price: 8800, available: 5, icon: "users" }
+        ]
+      }
+    ];
+
+    // Weekly Mess Schedule (Page 05)
+    const MESS_SCHEDULE = {
+      "Mon": { breakfast: "Aloo Paratha + Curd + Tea", lunch: "Rajma Chawal + Roti + Salad", dinner: "Mix Veg + Dal Fry + Rice + Gulab Jamun" },
+      "Tue": { breakfast: "Poha + Jalebi + Coffee/Tea", lunch: "Kadhi Pakoda + Jeera Rice + Chapati", dinner: "Paneer Butter Masala + Butter Roti + Kheer" },
+      "Wed": { breakfast: "Idli Sambar + Coconut Chutney", lunch: "Chole Bhature + Boondi Raita", dinner: "Aloo Gobi + Yellow Dal + Rice + Fruit Custard" },
+      "Thu": { breakfast: "Paneer Paratha + Pickle + Tea", lunch: "Bhindi Masala + Dal Tadka + Roti", dinner: "Veg Biryani + Mirchi Ka Salan + Raita" },
+      "Fri": { breakfast: "Puri Bhaji + Tea", lunch: "Dal Makhani + Veg Pulao + Chapati", dinner: "Sev Tamatar + Lauki Dal + Chapati + Halwa" },
+      "Sat": { breakfast: "Uttapam / Dosa + Chutney", lunch: "Aloo Veggie Curry + Plain Rice + Roti", dinner: "Veg Kofta + Dal Fry + Jeera Rice" },
+      "Sun": { breakfast: "Chole Kulche + Cold Coffee", lunch: "Special Sunday Thali (Paneer/Veg Special)", dinner: "Light Khichdi / Pav Bhaji + Ice Cream" }
+    };
+
+    let selectedMessDay = "Mon";
+    let selectedHostelForModal = hostelsData[0];
+    let selectedRoomForModal = hostelsData[0].rooms[0];
+
+    // --- 2. LEAFLET MAP INITIALIZATION (Standard Google Map Look) ---
+    let map, markerGroup, circleBoundary;
+
+    function initMap() {
+      map = L.map('map').setView([currentSelectedCollege.lat, currentSelectedCollege.lng], 14);
+
+      // Google Maps Tile Layer
+      L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+        maxZoom: 20,
+        subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
+        attribution: '&copy; Google Maps Data'
+      }).addTo(map);
+
+      markerGroup = L.layerGroup().addTo(map);
+      updateMapPins();
+    }
+
+    function updateMapPins() {
+      if (!map) return;
+      markerGroup.clearLayers();
+
+      // College Pin (Red Icon)
+      const collegeIcon = L.divIcon({
+        className: 'custom-div-icon',
+        html: `<div style="background-color:#ea580c; color:white; padding:6px 10px; border-radius:20px; font-weight:bold; font-size:11px; border:2px solid white; box-shadow:0 4px 6px rgba(0,0,0,0.2); display:flex; items-center; gap:4px;">🏛️ ${currentSelectedCollege.name.split(' ')[0]}</div>`,
+        iconSize: [120, 30]
+      });
+      L.marker([currentSelectedCollege.lat, currentSelectedCollege.lng], { icon: collegeIcon }).addTo(markerGroup);
+
+      // Boundary Circle
+      if (circleBoundary) map.removeLayer(circleBoundary);
+      circleBoundary = L.circle([currentSelectedCollege.lat, currentSelectedCollege.lng], {
+        color: '#4f46e5',
+        fillColor: '#6366f1',
+        fillOpacity: 0.12,
+        radius: currentRadiusKm * 1000
+      }).addTo(map);
+
+      // Hostel Pins (Blue Price Icons)
+      hostelsData.forEach(h => {
+        const hostelIcon = L.divIcon({
+          className: 'custom-div-icon',
+          html: `<div style="background-color:#4f46e5; color:white; padding:4px 8px; border-radius:12px; font-weight:bold; font-size:10px; border:2px solid white; box-shadow:0 2px 4px rgba(0,0,0,0.3);">₹${h.priceMonthly}/mo</div>`,
+          iconSize: [70, 25]
+        });
+
+        const marker = L.marker([h.lat, h.lng], { icon: hostelIcon }).addTo(markerGroup);
+        marker.bindPopup(`
+          <div style="font-size:12px; font-weight:600;">
+            <p style="margin:0; font-weight:bold; color:#1e293b;">${h.name}</p>
+            <p style="margin:2px 0 6px 0; color:#64748b; font-size:11px;">₹${h.priceMonthly}/mo • ${h.distKm} KM away</p>
+            <button onclick="selectHostelFromMap('${h.id}')" style="background:#ea580c; color:white; border:none; padding:4px 8px; border-radius:6px; font-size:10px; cursor:pointer;">View Rooms</button>
+          </div>
+        `);
+      });
+
+      map.panTo([currentSelectedCollege.lat, currentSelectedCollege.lng]);
+    }
+
+    // --- 3. AUTOCOMPLETE COLLEGE SEARCH (AICTE & Open API Integration) ---
+    function handleCollegeSearch(query, targetId) {
+      const container = document.getElementById(targetId);
+      if (!query || query.trim().length < 2) {
+        container.classList.add('hidden');
+        return;
+      }
+
+      const q = query.toLowerCase();
+      const localMatches = COLLEGES_DB.filter(c => 
+        c.name.toLowerCase().includes(q) || c.city.toLowerCase().includes(q)
+      );
+
+      // Render Suggestions Dropdown
+      let html = localMatches.map(c => `
+        <div onclick="selectPresetCollege('${c.name}')" class="p-3 hover:bg-slate-50 cursor-pointer flex items-center justify-between text-xs">
+          <div>
+            <p class="font-bold text-slate-800">${c.name}</p>
+            <p class="text-[10px] text-slate-500">${c.city}, ${c.state}</p>
+          </div>
+          <span class="text-[10px] bg-brand-50 text-brand-700 font-semibold px-2 py-0.5 rounded-full">Select</span>
+        </div>
+      `).join('');
+
+      if (localMatches.length === 0) {
+        html = `
+          <div onclick="selectCustomCity('${query}')" class="p-3 hover:bg-slate-50 cursor-pointer text-xs">
+            <p class="font-bold text-brand-600">Search PGs near "${query}"</p>
+            <p class="text-[10px] text-slate-400">Search hostels in this city or locality</p>
+          </div>
+        `;
+      }
+
+      container.innerHTML = html;
+      container.classList.remove('hidden');
+    }
+
+    function selectPresetCollege(collegeName) {
+      const found = COLLEGES_DB.find(c => c.name.toLowerCase().includes(collegeName.toLowerCase()));
+      if (found) {
+        currentSelectedCollege = found;
+      } else {
+        currentSelectedCollege = { name: collegeName, city: "India", state: "", lat: 28.6904, lng: 77.2066 };
+      }
+
+      document.getElementById('activeCollegeLabel').innerText = currentSelectedCollege.name.split('(')[0];
+      document.getElementById('headerResults').classList.add('hidden');
+      document.getElementById('heroResults').classList.add('hidden');
+
+      // Update external map link
+      const mapUrl = `https://www.google.com/maps/search/hostels+near+${encodeURIComponent(currentSelectedCollege.name)}`;
+      document.getElementById('gmapsExternalLink').href = mapUrl;
+
+      // Re-generate simulated hostel coords near selected college
+      recalculateHostelCoords();
+      updateMapPins();
+      renderHostels();
+    }
+
+    function selectCustomCity(cityName) {
+      currentSelectedCollege = { name: `${cityName} Campus Area`, city: cityName, state: "India", lat: 28.6139, lng: 77.2090 };
+      selectPresetCollege(currentSelectedCollege.name);
+    }
+
+    function useCurrentLocation() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition((pos) => {
+          currentSelectedCollege = {
+            name: "Your Current Location",
+            city: "Nearby",
+            state: "",
+            lat: pos.coords.latitude,
+            lng: pos.coords.longitude
+          };
+          selectPresetCollege("Your Current Location");
+        }, () => {
+          alert("GPS permission denied. Showing default DU North Campus.");
+        });
+      }
+    }
+
+    function recalculateHostelCoords() {
+      hostelsData.forEach((h, index) => {
+        const deltaLat = (index % 2 === 0 ? 1 : -1) * (0.004 * (index + 1));
+        const deltaLng = (index % 3 === 0 ? 1 : -1) * (0.005 * (index + 1));
+        h.lat = currentSelectedCollege.lat + deltaLat;
+        h.lng = currentSelectedCollege.lng + deltaLng;
+      });
+    }
+
+    // --- 4. FILTERS & HOSTEL RENDERER (HANDWRITTEN PAGE 02 & 03) ---
+    function updateRadius(val) {
+      currentRadiusKm = parseFloat(val);
+      document.getElementById('radiusVal').innerText = `${val} KM`;
+      updateMapPins();
+      renderHostels();
+    }
+
+    function renderHostels() {
+      const container = document.getElementById('hostelsContainer');
+      const sortVal = document.getElementById('sortBy').value;
+
+      const filterMess = document.getElementById('filterMess').checked;
+      const filterAc = document.getElementById('filterAc').checked;
+      const filterPower = document.getElementById('filterPower').checked;
+      const filterBiometric = document.getElementById('filterBiometric').checked;
+
+      let list = hostelsData.filter(h => {
+        if (h.distKm > currentRadiusKm + 1.5) return false;
+        if (filterMess && !h.hasMess) return false;
+        if (filterAc && !h.hasAc) return false;
+        if (filterPower && !h.hasPower) return false;
+        if (filterBiometric && !h.hasBiometric) return false;
+        return true;
+      });
+
+      // Sorting Logic
+      if (sortVal === 'priceLow') list.sort((a, b) => a.priceMonthly - b.priceMonthly);
+      if (sortVal === 'distance') list.sort((a, b) => a.distKm - b.distKm);
+      if (sortVal === 'rating') list.sort((a, b) => b.rating - a.rating);
+
+      document.getElementById('hostelCountLabel').innerText = `Showing ${list.length} verified hostels within ${currentRadiusKm} KM radius`;
+
+      if (list.length === 0) {
+        container.innerHTML = `
+          <div class="col-span-full p-8 text-center bg-white rounded-2xl border border-dashed border-slate-300 space-y-2">
+            <i data-lucide="building" class="w-8 h-8 text-slate-300 mx-auto"></i>
+            <p class="font-bold text-slate-700">No Hostels Match Current Filters</p>
+            <p class="text-xs text-slate-400">Try expanding your KM radius boundary or unchecking strict amenity filters.</p>
+          </div>
+        `;
+        lucide.createIcons();
+        return;
+      }
+
+      container.innerHTML = list.map(h => `
+        <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs hover:shadow-md transition flex flex-col justify-between">
+          <div>
+            <div class="relative h-40 overflow-hidden">
+              <img src="${h.image}" alt="${h.name}" class="w-full h-full object-cover">
+              <span class="absolute top-2 left-2 bg-slate-900/80 backdrop-blur-md text-white text-[10px] font-bold px-2.5 py-1 rounded-full flex items-center gap-1">
+                ${h.badge}
+              </span>
+              <span class="absolute bottom-2 right-2 bg-emerald-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-md">
+                ${h.distKm} KM from Campus
+              </span>
+            </div>
+
+            <div class="p-4 space-y-2">
+              <div class="flex items-start justify-between gap-2">
+                <h3 class="font-heading font-bold text-slate-900 text-sm line-clamp-1">${h.name}</h3>
+                <span class="flex items-center gap-0.5 text-xs font-bold text-amber-500 bg-amber-50 px-1.5 py-0.5 rounded">
+                  ★ ${h.rating}
+                </span>
+              </div>
+
+              <!-- Key Badges -->
+              <div class="flex flex-wrap gap-1 text-[10px] text-slate-600">
+                ${h.hasMess ? '<span class="bg-slate-100 px-2 py-0.5 rounded">Veg Mess</span>' : ''}
+                ${h.hasAc ? '<span class="bg-slate-100 px-2 py-0.5 rounded">AC Available</span>' : ''}
+                ${h.hasPower ? '<span class="bg-slate-100 px-2 py-0.5 rounded">24/7 Power</span>' : ''}
+              </div>
+
+              <div class="pt-2 border-t border-slate-100 flex items-baseline justify-between">
+                <div>
+                  <span class="text-[10px] text-slate-400 font-medium block">Starting Rent</span>
+                  <span class="text-base font-extrabold text-brand-600">₹${h.priceMonthly.toLocaleString('en-IN')}</span>
+                  <span class="text-[10px] text-slate-500">/ month</span>
+                </div>
+                <button onclick="viewHostelRooms('${h.id}')" class="bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs px-3 py-1.5 rounded-xl transition flex items-center gap-1">
+                  View Rooms <i data-lucide="chevron-right" class="w-3 h-3"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      `).join('');
+
+      lucide.createIcons();
+    }
+
+    function resetFilters() {
+      document.getElementById('filterMess').checked = true;
+      document.getElementById('filterAc').checked = false;
+      document.getElementById('filterPower').checked = false;
+      document.getElementById('filterBiometric').checked = false;
+      document.getElementById('radiusRange').value = 2.5;
+      updateRadius(2.5);
+    }
+
+    function selectHostelFromMap(id) {
+      viewHostelRooms(id);
+    }
+
+    function viewHostelRooms(hostelId) {
+      const h = hostelsData.find(item => item.id === hostelId) || hostelsData[0];
+      selectedHostelForModal = h;
+      document.getElementById('selectedHostelNameRooms').innerText = h.name;
+
+      const container = document.getElementById('roomsContainer');
+      container.innerHTML = h.rooms.map((r, i) => `
+        <div class="border border-slate-200 rounded-2xl p-5 hover:border-brand-500 transition space-y-4 bg-slate-50/50 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between">
+              <span class="w-8 h-8 rounded-xl bg-brand-100 text-brand-600 flex items-center justify-center font-bold">
+                <i data-lucide="${r.icon}" class="w-4 h-4"></i>
+              </span>
+              <span class="text-[11px] font-bold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full">
+                ${r.available} Rooms Available
+              </span>
+            </div>
+
+            <h4 class="font-heading font-bold text-slate-900 text-base mt-3">${r.type}</h4>
+            <ul class="mt-2 space-y-1.5 text-xs text-slate-600">
+              <li class="flex items-center gap-1.5"><i data-lucide="check" class="w-3.5 h-3.5 text-emerald-500"></i> Wooden Bed & Study Desk</li>
+              <li class="flex items-center gap-1.5"><i data-lucide="check" class="w-3.5 h-3.5 text-emerald-500"></i> Individual Cupboard with Lock</li>
+              <li class="flex items-center gap-1.5"><i data-lucide="check" class="w-3.5 h-3.5 text-emerald-500"></i> Daily Room Cleaning</li>
+            </ul>
+          </div>
+
+          <div class="pt-3 border-t border-slate-200 flex items-center justify-between">
+            <div>
+              <span class="text-lg font-extrabold text-slate-900">₹${r.price.toLocaleString('en-IN')}</span>
+              <span class="text-[10px] text-slate-500">/ mo</span>
+            </div>
+            <button onclick="triggerBooking('${h.id}', ${i})" class="bg-saffron-500 hover:bg-saffron-600 text-white font-bold text-xs px-3 py-2 rounded-xl transition shadow-xs flex items-center gap-1">
+              Select Room <i data-lucide="arrow-right" class="w-3 h-3"></i>
+            </button>
+          </div>
+        </div>
+      `).join('');
+
+      switchTab('rooms');
+      lucide.createIcons();
+    }
+
+    // --- 5. PAGE 05 MESS MENU SCHEDULE RENDERER ---
+    function renderMessSchedule() {
+      const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+      const tabsContainer = document.getElementById('messDayTabs');
+
+      tabsContainer.innerHTML = days.map(d => `
+        <button onclick="setMessDay('${d}')" class="px-4 py-2 rounded-xl font-bold text-xs transition whitespace-nowrap ${d === selectedMessDay ? 'bg-emerald-600 text-white shadow-md' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}">
+          ${d === "Sun" ? '⭐ Sunday Special' : d}
+        </button>
+      `).join('');
+
+      const m = MESS_SCHEDULE[selectedMessDay];
+      const mealsContainer = document.getElementById('messMealsContainer');
+
+      mealsContainer.innerHTML = `
+        <div class="bg-amber-50/50 border border-amber-200 p-4 rounded-2xl space-y-2">
+          <div class="flex items-center gap-2 text-amber-800 font-bold text-sm">
+            <i data-lucide="sun" class="w-4 h-4 text-amber-600"></i> Breakfast (8:00 AM - 10:00 AM)
+          </div>
+          <p class="text-xs text-slate-700 font-medium">${m.breakfast}</p>
+          <span class="text-[10px] text-amber-600 bg-amber-100 px-2 py-0.5 rounded font-bold inline-block">Unlimited Tea/Milk</span>
+        </div>
+
+        <div class="bg-emerald-50/50 border border-emerald-200 p-4 rounded-2xl space-y-2">
+          <div class="flex items-center gap-2 text-emerald-800 font-bold text-sm">
+            <i data-lucide="utensils" class="w-4 h-4 text-emerald-600"></i> Lunch (12:30 PM - 2:30 PM)
+          </div>
+          <p class="text-xs text-slate-700 font-medium">${m.lunch}</p>
+          <span class="text-[10px] text-emerald-600 bg-emerald-100 px-2 py-0.5 rounded font-bold inline-block">Fresh Chapati & Salad Bar</span>
+        </div>
+
+        <div class="bg-indigo-50/50 border border-indigo-200 p-4 rounded-2xl space-y-2">
+          <div class="flex items-center gap-2 text-indigo-800 font-bold text-sm">
+            <i data-lucide="moon" class="w-4 h-4 text-indigo-600"></i> Dinner (8:00 PM - 10:00 PM)
+          </div>
+          <p class="text-xs text-slate-700 font-medium">${m.dinner}</p>
+          <span class="text-[10px] text-indigo-600 bg-indigo-100 px-2 py-0.5 rounded font-bold inline-block">Includes Dessert</span>
+        </div>
+      `;
+
+      lucide.createIcons();
+    }
+
+    function setMessDay(day) {
+      selectedMessDay = day;
+      renderMessSchedule();
+    }
+
+    // --- 6. PAGE 06 REVIEWS & AI RECOMMENDATION ENGINE ---
+    const REVIEWS_DATA = [
+      { name: "Aman Sharma (DU Student)", rating: 5, comment: "Awesome mess food! Rajma chawal on Mondays is just like home. Warden uncle is very supportive.", date: "2 days ago" },
+      { name: "Priya Patel (LPU B.Tech)", rating: 5, comment: "Biometric lock at gate gives complete peace of mind for female students. Super high-speed Wi-Fi.", date: "1 week ago" },
+      { name: "Rahul Verma (Kota Allen Student)", rating: 4, comment: "Peaceful environment for study. Power backup works seamlessly during summer electricity cuts.", date: "2 weeks ago" }
+    ];
+
+    function renderReviews() {
+      const container = document.getElementById('reviewsListContainer');
+      container.innerHTML = REVIEWS_DATA.map(r => `
+        <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-100 space-y-1">
+          <div class="flex items-center justify-between">
+            <span class="font-bold text-xs text-slate-800">${r.name}</span>
+            <span class="text-amber-500 text-xs font-bold">${'★'.repeat(r.rating)}</span>
+          </div>
+          <p class="text-xs text-slate-600 leading-relaxed">${r.comment}</p>
+          <span class="text-[10px] text-slate-400 block">${r.date}</span>
+        </div>
+      `).join('');
+    }
+
+    function submitReview() {
+      const name = document.getElementById('reviewerName').value;
+      const comment = document.getElementById('reviewerComment').value;
+      const rating = parseInt(document.getElementById('reviewerRating').value);
+
+      if (!name || !comment) {
+        alert("Please enter your name and review comment.");
+        return;
+      }
+
+      REVIEWS_DATA.unshift({ name, comment, rating, date: "Just now" });
+      renderReviews();
+      document.getElementById('reviewerName').value = '';
+      document.getElementById('reviewerComment').value = '';
+      alert("Thank you! Your review has been published.");
+    }
+
+    function runAiRecommendation() {
+      const maxBudget = parseFloat(document.getElementById('aiBudgetInput').value) || 7000;
+      const pref = document.getElementById('aiRoomPref').value;
+
+      const matches = hostelsData.filter(h => h.priceMonthly <= maxBudget);
+      const resContainer = document.getElementById('aiRecommendationResult');
+
+      if (matches.length > 0) {
+        const top = matches[0];
+        resContainer.innerHTML = `
+          <div class="space-y-1">
+            <span class="bg-saffron-500 text-white font-bold text-[10px] px-2 py-0.5 rounded">100% Match Found</span>
+            <p class="font-bold text-sm text-white">${top.name}</p>
+            <p class="text-[11px] text-slate-300">Monthly Rent: ₹${top.priceMonthly} • Distance: ${top.distKm} KM from campus</p>
+            <button onclick="viewHostelRooms('${top.id}')" class="mt-2 bg-white text-slate-900 font-bold px-3 py-1.5 rounded-lg text-xs hover:bg-slate-100 transition">
+              Book Recommended Room
+            </button>
+          </div>
+        `;
+      } else {
+        resContainer.innerHTML = `
+          <p class="text-saffron-300 font-bold">No hostels under ₹${maxBudget}. Try raising budget to ₹6,000.</p>
+        `;
+      }
+      resContainer.classList.remove('hidden');
+    }
+
+    // --- 7. MODALS & PAYMENTS (GPay, PhonePe, UPI) ---
+    function triggerBooking(hostelId, roomIndex) {
+      const h = hostelsData.find(item => item.id === hostelId) || hostelsData[0];
+      selectedHostelForModal = h;
+      selectedRoomForModal = h.rooms[roomIndex] || h.rooms[0];
+
+      document.getElementById('modalHostelName').innerText = h.name;
+      document.getElementById('modalRoomType').innerText = selectedRoomForModal.type;
+
+      openBookingModal();
+    }
+
+    function openBookingModal() {
+      document.getElementById('bookingModal').classList.remove('hidden');
+    }
+
+    function closeBookingModal() {
+      document.getElementById('bookingModal').classList.add('hidden');
+    }
+
+    function openLoginModal() {
+      document.getElementById('loginModal').classList.remove('hidden');
+    }
+
+    function closeLoginModal() {
+      document.getElementById('loginModal').classList.add('hidden');
+    }
+
+    function sendOtp() {
+      const mob = document.getElementById('loginMobile').value;
+      if (!mob) {
+        alert("Please enter mobile number.");
+        return;
+      }
+      alert(`OTP sent to ${mob}. Default code: 1234`);
+      document.getElementById('authContainer').innerHTML = `
+        <span class="text-xs bg-emerald-100 text-emerald-800 font-bold px-3 py-1.5 rounded-xl flex items-center gap-1">
+          <i data-lucide="check-circle" class="w-4 h-4"></i> Verified Student
+        </span>
+      `;
+      closeLoginModal();
+      lucide.createIcons();
+    }
+
+    function selectPayment(method) {
+      alert(`Selected ${method.toUpperCase()} Payment Gateway.`);
+    }
+
+    function confirmBooking() {
+      const phone = document.getElementById('bookingPhone').value;
+      if (!phone) {
+        alert("Please enter your phone number to receive WhatsApp receipt.");
+        return;
+      }
+
+      alert(`🎉 Pre-booking Token Payment Successful!\n\nReceipt & Warden Contact for "${selectedHostelForModal.name}" sent via WhatsApp to ${phone}.`);
+      closeBookingModal();
+    }
+
+    function triggerSearchFromHero() {
+      const input = document.getElementById('heroCollegeInput').value;
+      if (input) selectPresetCollege(input);
+      switchTab('explore');
+    }
+
+    // --- 8. NAVIGATION TAB SWITCHER ---
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('border-brand-600', 'text-brand-600');
+        btn.classList.add('border-transparent', 'text-slate-500');
+      });
+
+      document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+      const activeBtn = document.getElementById(`tabBtn-${tabId}`);
+      if (activeBtn) {
+        activeBtn.classList.remove('border-transparent', 'text-slate-500');
+        activeBtn.classList.add('border-brand-600', 'text-brand-600');
+      }
+
+      if (tabId === 'explore' && map) {
+        setTimeout(() => map.invalidateSize(), 200);
+      }
+    }
+
+    // --- 9. INITIALIZATION ON PAGE LOAD ---
+    window.addEventListener('load', () => {
+      initMap();
+      renderHostels();
+      viewHostelRooms('h1');
+      renderMessSchedule();
+      renderReviews();
+      lucide.createIcons();
+    });
+  </script>
+</body>
+</html>
